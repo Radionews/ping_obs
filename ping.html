@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<script src="./ping.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+var data;
+var ping_var = 1;
+google.charts.load('current', {packages: ['corechart', 'line']}).then(function () {
+google.charts.setOnLoadCallback(drawBasic);
+data = new google.visualization.DataTable();
+data.addColumn('number', 'X');
+data.addColumn('number', 'ping');
+
+data.addRows([
+[0, 0],   [1, 0],  [2, 0],  [3, 0],  [4, 0],  
+[5, 0],   [6, 0],  [7, 0],  [8, 0],  [9, 0]
+]); 
+});
+
+function drawBasic() {
+    for(var i = 9; i>0; i--)
+    {
+        data.setCell(i, 1, data.getValue(i-1,1));
+    }
+    data.setCell(0, 1, ping_var);
+    var options = {
+        legend: 'none',
+        'width':300,
+        'height':200,
+        'backgroundColor': 'transparent',
+        'colors': ['#00FFFF'],
+        hAxis: {textStyle: {color: 'transparent'}},
+        vAxis: {textStyle:{color: '#FFF'}}
+        };
+    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+};
+
+function do_it(){
+    do_ping();
+    drawBasic();
+}
+setInterval(do_it, 1000);
+
+var do_ping = function() {
+        ping('https://a.rtmp.youtube.com/',0.23).then(function(delta) {
+            ping_var = delta;
+        });
+    };
+</script>
+</head>
+<body>
+<div id="chart_div"></div>
+</body>
+</html>
